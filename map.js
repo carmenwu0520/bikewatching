@@ -96,6 +96,17 @@ function tooltipText(d) {
   return `${d.name}\n${d.totalTraffic} trips (${d.departures} departures, ${d.arrivals} arrivals)`;
 }
 
+// Step 4.4 Going Further: 自定义提示框（跟着鼠标走）
+const tooltip = d3.select('body').append('div').attr('id', 'station-tooltip').attr('hidden', true);
+
+function tooltipHTML(d) {
+  return `<strong>${d.name}</strong><br>${d.totalTraffic} trips<br>${d.departures} departures · ${d.arrivals} arrivals`;
+}
+
+function moveTooltip(event) {
+  tooltip.style('left', event.clientX + 14 + 'px').style('top', event.clientY + 14 + 'px');
+}
+
 // Step 2.3 Going Further: 自行车道样式只写一次，两个城市共用
 const bikeLaneStyle = {
   'line-color': '#32D400',
@@ -169,9 +180,14 @@ map.on('load', async () => {
     .append('circle')
     .attr('r', (d) => radiusScale(d.totalTraffic))
     .style('--departure-ratio', departureRatio)
-    .each(function (d) {
-      d3.select(this).append('title').text(tooltipText(d));
-    });
+    // Step 4.4: tooltip。鼠标一碰到圆就显示自定义提示框
+    .attr('aria-label', tooltipText)
+    .on('mouseenter', (event, d) => {
+      tooltip.html(tooltipHTML(d)).attr('hidden', null);
+      moveTooltip(event);
+    })
+    .on('mousemove', moveTooltip)
+    .on('mouseleave', () => tooltip.attr('hidden', true));
 
   // 地图一动就重新算圆的位置
   function updatePositions() {
@@ -207,7 +223,7 @@ map.on('load', async () => {
       .attr('r', (d) => radiusScale(d.totalTraffic))
       .style('--departure-ratio', departureRatio);
 
-    circles.select('title').text(tooltipText);
+    circles.attr('aria-label', tooltipText);
   }
 
   function updateTimeDisplay() {

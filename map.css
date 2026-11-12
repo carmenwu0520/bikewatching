@@ -70,31 +70,26 @@ header em {
   pointer-events: auto; /* 圆圈本身要能 hover，才有 tooltip */
 }
 
-/* ---------- Step 6.2: 图例（Design 1: Blocks） ---------- */
+/* ---------- Step 6.2: 图例（Design 1: Blocks，浮在地图左上角） ---------- */
 .legend {
+  position: absolute;
+  z-index: 2; /* 在 svg 圆圈上面 */
+  top: 10px;
+  left: 10px;
   display: flex;
   gap: 1px;
-  margin-block: 1em;
+  border-radius: 6px;
+  overflow: hidden;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+  font-size: 0.9em;
 }
 
 .legend > div {
-  flex: 1;
-  padding: 0.3em 1.5em;
+  padding: 0.35em 1.2em;
   background: var(--color);
   color: white;
   font-weight: bold;
-}
-
-.legend > div:nth-child(1) {
-  text-align: left;
-}
-
-.legend > div:nth-child(2) {
-  text-align: center;
-}
-
-.legend > div:nth-child(3) {
-  text-align: right;
+  white-space: nowrap;
 }
 
 /* ---------- Step 4.4: 自定义 tooltip ---------- */
